@@ -13,9 +13,9 @@ public class CustomActionPackBuilder : IStartupPackBuilder
         _packModel = new CustomActionPackModel();
     }
 
-    public IStartupPack Build()
+    public IStartupPack Build(IServiceProvider provider)
     {
-        var pack = new CustomActionPack(_packModel);
+        var pack = new CustomActionPack(provider, _packModel);
 
         return pack;
     }

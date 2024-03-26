@@ -9,5 +9,5 @@ public interface IStartupPackBuilder
     void SetupAddAction(Action<IServiceCollection> action);
     void SetupUseAction(Action<IApplicationBuilder> action);
     void SetupIsActiveFunction(Func<bool> func);
-    IStartupPack Build();
+    IStartupPack Build(IServiceProvider provider);
 }

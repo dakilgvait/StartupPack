@@ -6,15 +6,24 @@ namespace StartupPack;
 public class CustomActionPack : IStartupPack
 {
     private readonly CustomActionPackModel _packModel;
+    private readonly IPackIndexer? _packIndexer;
+    private readonly IPackActivator? _packActivator;
 
-    public CustomActionPack(CustomActionPackModel model)
+    public CustomActionPack(IServiceProvider provider, CustomActionPackModel model)
     {
+        _packIndexer = provider.GetService<IPackIndexer>();
+        _packActivator = provider.GetService<IPackActivator>();
         _packModel = model;
     }
 
     public bool GetIsActive()
     {
-        return _packModel.FunctionIsActive?.Invoke() ?? true;
+        if (_packModel.FunctionIsActive != null)
+        {
+            return _packModel.FunctionIsActive.Invoke();
+        }
+
+        return _packActivator?.IsActive(_packModel.Name) ?? true;
     }
 
     public void Configure(IApplicationBuilder application)
@@ -29,11 +38,11 @@ public class CustomActionPack : IStartupPack
 
     public int? GetAddIndex()
     {
-        return null;
+        return _packIndexer?.GetIndexAdd(_packModel.Name);
     }
 
     public int? GetUseIndex()
     {
-        return null;
+        return _packIndexer?.GetIndexUse(_packModel.Name);
     }
 }
